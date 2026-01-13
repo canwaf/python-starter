@@ -124,14 +124,14 @@ All scripts defined in `[tool.poetry.scripts]` delegate to [cli.py](src/python_f
 ## Adding Features
 
 ### API Versioning
-The API supports versioning via the `Accept` header. Clients specify `api-version=X` to request a specific version.
+The API supports versioning via the `api-version` header. Clients specify the version number directly.
 
 **Default behavior**: Latest version (currently version 2)
 
 **Usage in requests**:
 ```
-Accept: application/json; api-version=1
-Accept: application/json; api-version=2
+api-version: 1
+api-version: 2
 ```
 
 **Implementation pattern** in endpoints:
@@ -151,12 +151,12 @@ def list_items(version: int = Depends(get_api_version)):
 ```python
 def test_list_items_v1():
     response = client.get("/items", 
-        headers={"Accept": "application/json; api-version=1"})
+        headers={"api-version": "1"})
     assert response.json() == {"items": []}
 
 def test_list_items_v2():
     response = client.get("/items", 
-        headers={"Accept": "application/json; api-version=2"})
+        headers={"api-version": "2"})
     assert "count" in response.json()
 ```
 

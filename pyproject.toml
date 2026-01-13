@@ -28,11 +28,14 @@ python-semantic-release = "^10.3.1"
 lefthook = "^1.12.3"
 httpx = "^0.28.0"
 bandit = "^1.8.6"
-setuptools = "^80.9.0"
 dsp3-toolkit = "^1.0.1"
+pytest-cov = "^5.0.0"
 
 [tool.mypy]
 ignore_missing_imports = true
+[tool.pytest.ini_options]
+addopts = "--cov=src/python_fastapi_starter --cov-report=term-missing --cov-fail-under=90"
+
 
 [[tool.mypy.overrides]]
 module = "dsp_toolkit.*"

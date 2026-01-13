@@ -13,6 +13,7 @@
     - [In VS Code](#in-vs-code)
   - [Testing](#testing)
     - [Run all tests](#run-all-tests)
+    - [Coverage](#coverage)
     - [Run tests in a group/file](#run-tests-in-a-groupfile)
     - [Run a single test](#run-a-single-test)
   - [Passing Arguments to Poetry Scripts](#passing-arguments-to-poetry-scripts)
@@ -169,6 +170,12 @@ poetry run start
 ```sh
 poetry run test
 ```
+### Coverage
+
+- Test coverage is enforced at 90% via `pytest-cov`.
+- The default test command includes coverage reporting and will fail under 90%.
+- Configuration lives in `pyproject.toml` under `[tool.pytest.ini_options]`.
+
 ### Run tests in a group/file
 
 ```sh

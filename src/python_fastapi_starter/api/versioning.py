@@ -1,6 +1,5 @@
 """
-API versioning support via Accept header.
-Parses the 'api-version' parameter from Accept header to determine API version.
+API versioning support via custom API-Version header.
 """
 
 from typing import Optional
@@ -11,15 +10,15 @@ from fastapi import Header
 LATEST_API_VERSION = 2
 
 
-def get_api_version(accept: Optional[str] = Header(None)) -> int:
+def get_api_version(api_version: Optional[int] = Header(None, alias="api-version")) -> int:
     """
-    Extract API version from Accept header.
+    Extract API version from API-Version header.
 
-    Expects format: application/json; api-version=1
+    Expects header: api-version: 1
     If not specified, returns the latest API version.
 
     Args:
-        accept: Accept header value from request
+        api_version: API-Version header value from request
 
     Returns:
         int: API version (1, 2, 3, etc.). Defaults to LATEST_API_VERSION.
@@ -32,18 +31,11 @@ def get_api_version(accept: Optional[str] = Header(None)) -> int:
             elif version == 2:
                 return {"data": {"items": []}}
     """
-    if not accept:
+    if not api_version:
         return LATEST_API_VERSION
 
-    # Parse 'api-version=X' from Accept header
-    parts = accept.split(";")
-    for part in parts[1:]:
-        part = part.strip()
-        if part.startswith("api-version="):
-            try:
-                version = int(part.split("=")[1])
-                return max(1, version)  # Ensure minimum version is 1
-            except (ValueError, IndexError):
-                pass
-
-    return LATEST_API_VERSION
+    try:
+        version = api_version
+        return max(1, version)  # Ensure minimum version is 1
+    except (ValueError, TypeError):
+        return LATEST_API_VERSION
