@@ -6,11 +6,10 @@ startup, test, lint, format, release, and postinstall commands.
 import os
 import shutil
 import socket
-import subprocess  # noqa: S404
+import subprocess
 import sys
 
 import uvicorn
-from dsp_toolkit.cli import lint_and_format as dsp_lint_and_format
 from dsp_toolkit.cli import release as dsp_release
 from dsp_toolkit.cli import test as dsp_test
 from dsp_toolkit.env import load_environment
@@ -56,13 +55,24 @@ def test():
     sys.exit(dsp_test())
 
 
-def lint_and_format():
+def lint():
+    """
+    Run Ruff to check code and fix lint issues.
+    Accepts additional arguments (e.g., directories or files).
+    """
+    logger.info("Running linting.")
+    # Use ruff check with --fix to automatically fix issues
+    sys.exit(subprocess.call(["ruff", "check", "--fix", "src", "tests"]))
+
+
+def format_code():
     """
     Run Ruff to format code and fix lint issues (including import sorting).
     Accepts additional arguments (e.g., directories or files).
     """
-    logger.info("Running lint and format.")
-    sys.exit(dsp_lint_and_format())
+    logger.info("Running formatting.")
+    # Use ruff format directly
+    sys.exit(subprocess.call(["ruff", "format", "src", "tests"]))
 
 
 def release():

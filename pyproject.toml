@@ -10,7 +10,8 @@ packages = [{ include = "python_fastapi_starter", from = "src" }]
 [tool.poetry.scripts]
 start = "python_fastapi_starter.cli:main"
 test = "python_fastapi_starter.cli:test"
-lint = "python_fastapi_starter.cli:lint_and_format"
+lint = "python_fastapi_starter.cli:lint"
+format = "python_fastapi_starter.cli:format_code"
 release = "python_fastapi_starter.cli:release"
 postinstall = "python_fastapi_starter.cli:postinstall"
 

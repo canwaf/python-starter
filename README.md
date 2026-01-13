@@ -249,12 +249,12 @@ To completely reset the database and start from scratch:
    ```sh
    docker compose down
    ```
-1. **Remove the database volume:**
+2. **Remove the database volume:**
    ```sh
    docker volume rm python-fastapistarter_db_data
    ```
    (If your project folder name changes, adjust the volume name accordingly.)
-1. **Start containers again:**
+3. **Start containers again:**
    ```sh
    docker compose up --build
    ```
