@@ -5,4 +5,3 @@ pre-push:
 pre-commit:
   scripts:
     "poetry run lint": {}
-    "poetry run flake8": {}

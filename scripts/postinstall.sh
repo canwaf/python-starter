@@ -14,4 +14,9 @@ if [ -f .gitmessage ]; then
   git config commit.template .gitmessage
 fi
 
-direnv allow
+# Create and activate virtual environment
+python3 -m venv .venv
+. .venv/bin/activate
+
+# Install dependencies with poetry
+poetry install

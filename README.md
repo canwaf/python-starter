@@ -36,8 +36,8 @@ A starter template for building FastAPI applications with Poetry, Docker, semant
 
 ## Project Structure
 
-- `src/python_fastapi_starter/cli.py` — CLI utilities and entry points
-- `src/python_fastapi_starter/api/` — FastAPI app code (main.py, routers, models, etc.)
+- `python_fastapi_starter/cli.py` — CLI utilities and entry points
+- `python_fastapi_starter/api/` — FastAPI app code (main.py, routers, models, etc.)
 - `tests/` — Pytest test files
 - `db/schema.sql` — Database schema
 - `db/seed.sql` — Seed data
@@ -47,14 +47,15 @@ A starter template for building FastAPI applications with Poetry, Docker, semant
 - `ruff.toml` — Ruff linting & formatting configuration
 - `lefthook.yml` — Git hooks configuration
 - `scripts/` — Project automation scripts (see below)
+- `.env` — Static environment variables (included in repo)
+- `.env.local` — Local secrets and overrides (git-ignored)
 
 ## Scripts
 
 All project automation and hook scripts should be placed in the `scripts/` directory. Current scripts include:
 
 - `pre_push.sh` — Used by Lefthook for pre-push checks (linting, tests, etc.)
-- `postinstall.sh` — Post-install setup steps to 
-- `python-autoenv.sh` — Used by direnv for automated Python environment setup
+- `postinstall.sh` — Post-install setup steps (creates .venv and installs dependencies)
 
 If you add custom automation or hook scripts, place them in this directory for consistency.
 
@@ -65,45 +66,65 @@ If you add custom automation or hook scripts, place them in this directory for c
    git clone <repo-url>
    cd python-fastapistarter
    ```
-1. **Automated Python virtualenv setup (recommended):**
 
-   There is an `.envrc` file included in the repo, so no setup of the `virtualenv` is needed except approving it i.e. `direnv allow`. The automated environment uses [direnv](https://direnv.net/), the `.envrc` and the included `scripts/python-autoenv.sh` script:
+2. **Install pyenv** (recommended for Python version management):
+   - On macOS (Homebrew):
+     ```sh
+     brew update && brew install pyenv
+     # Build dependencies for compiling Python via pyenv
+     brew install openssl readline sqlite3 xz zlib
+     ```
+   - On Ubuntu/Debian:
+     ```sh
+     curl https://pyenv.run | bash
+     # Build dependencies for compiling Python via pyenv
+     sudo apt update && sudo apt install -y \
+       build-essential \
+       libssl-dev \
+       zlib1g-dev \
+       libbz2-dev \
+       libreadline-dev \
+       libsqlite3-dev \
+       curl \
+       libncursesw5-dev \
+       xz-utils \
+       tk-dev \
+       libxml2-dev \
+       libxmlsec1-dev \
+       libffi-dev \
+       liblzma-dev
+     ```
+   - For shell configuration (initialization), see the official guide: https://github.com/pyenv/pyenv?tab=readme-ov-file#b-set-up-your-shell-environment-for-pyenv
 
-   1. **Install direnv** (if not already installed):
-      - On Ubuntu/Debian:
-        ```sh
-        sudo apt install direnv
-        ```
-      - On macOS (Homebrew):
-        ```sh
-        brew install direnv
-        ```
-      - Or see [direnv installation docs](https://direnv.net/docs/installation.html)
-   1. **Enable direnv in your shell:**
-      - For bash, add to `~/.bashrc`:
-        ```sh
-        eval "$(direnv hook bash)"
-        ```
-      - For zsh, add to `~/.zshrc`:
-        ```sh
-        eval "$(direnv hook zsh)"
-        ```
-
-   1. **Approve the environment:**
-      ```sh
-      direnv allow
-      ```
-      This enables the automated setup: when you enter the project directory, direnv will create and activate `.venv` if missing and install dependencies automatically.
-
-   If you don't use direnv, you can remove the `.envrc` file and manually set up the environment, but I don't recommend that, automation prevents stupid mistakes:
+3. **Install Python 3.12** with pyenv:
    ```sh
-   python3 -m venv .venv
-   source .venv/bin/activate
+   pyenv install 3.12
+   pyenv local 3.12
+   ```
+   Verify the installation: `python3 --version`
+
+4. **Install Poetry:**
+   - Follow the [Poetry installation guide](https://python-poetry.org/docs/#installation)
+   - Verify installation: `poetry --version`
+
+5. **Set up the virtual environment and install dependencies:**
+   ```sh
    poetry install
    ```
-1. **Set up environment variables:**
+   This command will:
+   - Create a `.venv` directory in the project root
+   - Activate the virtual environment
+   - Install all dependencies defined in `pyproject.toml`
+
+6. **Activate the virtual environment** (if not already active):
+   ```sh
+   source .venv/bin/activate
+   ```
+
+7. **Set up environment variables:**
    - For local development, create a `.env.local` file if needed (e.g., for DB connection, secrets).
    - For GitHub releases, set `GH_TOKEN` in your GitHub repository secrets.
+   - Environment variables are automatically loaded from `.env` and `.env.local` via `python-dotenv` when the application starts.
 
 ## Environment Variables
 
@@ -196,7 +217,7 @@ Arguments after the script name are forwarded to the underlying tool (pytest, ru
 ## Releasing
 
 - Releases are automated via GitHub Actions (`.github/workflows/release.yml`).
-- Ensure your commit messages follow the [Angular commit guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines).
+- Ensure your commit messages follow **Conventional Commits**: https://www.conventionalcommits.org/
 - Set `GH_TOKEN` in your GitHub repository secrets for release automation.
 - To trigger a release manually:
   - Go to GitHub Actions → RELEASE → Run workflow
@@ -283,13 +304,10 @@ This method works for any local development workflow and does not require extra 
 
 ## Contributing
 
-We welcome contributions! Please follow these guidelines:
+This repository is for Telespazio UK's internal development. External contributions and pull requests are not accepted.
 
-- **Code style:** Use Ruff for linting and formatting. Run `poetry run lint` before submitting PRs.
-- **Testing:** Ensure all tests pass with `poetry run test`.
-- **Commit messages:** Follow the [Angular commit guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines). A commit message template is provided in `.gitmessage`.
-- **PRs:** Make pull requests against the `main` branch. Include a clear description and reference any related issues.
-- **Release management:** Releases are automated via semantic-release and GitHub Actions. See the release section above for details.
+- **Commit Style:** Use **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`). Semantic-release parses these for versioning.
+- **Code Quality:** Use Ruff for linting/formatting via `poetry run lint`; run tests with `poetry run test`.
 
 ## NGINX Security Configuration
 
